@@ -12,7 +12,8 @@ router.post("/", auth, async (req, res) => {
   var currentUser = jwt.decode(token, process.env.TOKEN_SECRET).id;
   var currentUserId = await User.collection.findOne({ email: currentUser });
   var currentUserId = String(currentUserId._id);
-  const newPost = new Post({userId: currentUserId ,...req.body});
+  const { title, desc } = req.body;
+  const newPost = new Post({ userId: currentUserId, title, desc });
   console.log(newPost);
   try {
     const savedPost = await newPost.save();
@@ -96,8 +97,8 @@ router.put("/:id/like", auth, async (req, res) => {
 
 router.put("/:id/comment", auth, async (req, res) => {
   const comment = req.body.comment;
- const authHeader = req.headers["authorization"];
- const token = authHeader && authHeader.split(" ")[1];
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
   var currentUser = jwt.decode(token, process.env.TOKEN_SECRET).id;
   var currentUserId = await User.collection.findOne({ email: currentUser });
   var currentUserId = String(currentUserId._id);
@@ -120,8 +121,8 @@ router.put("/:id/comment", auth, async (req, res) => {
 //get a post
 
 router.get("/:id", auth, async (req, res) => {
- const authHeader = req.headers["authorization"];
- const token = authHeader && authHeader.split(" ")[1];
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
   var currentUser = jwt.decode(token, process.env.TOKEN_SECRET).id;
   var currentUserId = await User.collection.findOne({ email: currentUser });
   var currentUserId = String(currentUserId._id);
