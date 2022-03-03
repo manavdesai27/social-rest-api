@@ -137,6 +137,7 @@ router.get("/timeline/all", auth, async (req, res) => {
     var currentUserId = await User.collection.findOne({
       email: currentUserJWT,
     });
+    console.log("timeline token", token);
     const currentUser = currentUserId;
 
     const userPosts = await Post.find({ userId: currentUser._id }).sort({
