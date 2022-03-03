@@ -132,7 +132,7 @@ router.get("/:id", auth, async (req, res) => {
 
 router.get("/timeline/all", auth, async (req, res) => {
   try {
-    var token = req.headers["x-access-token"];
+    var token = req.headers["authorization"];
     var currentUserJWT = jwt.decode(token, process.env.TOKEN_SECRET).id;
     var currentUserId = await User.collection.findOne({
       email: currentUserJWT,
