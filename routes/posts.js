@@ -44,7 +44,8 @@ router.post("/", auth, async (req, res) => {
 //delete a post
 
 router.delete("/:id", auth, async (req, res) => {
-  var token = req.headers["x-access-token"];
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
   var currentUser = jwt.decode(token, process.env.TOKEN_SECRET).id;
   var currentUserId = await User.collection.findOne({ email: currentUser });
   var currentUserId = String(currentUserId._id);
@@ -65,7 +66,8 @@ router.delete("/:id", auth, async (req, res) => {
 //like / dislike a post
 
 router.put("/:id/like", auth, async (req, res) => {
-  var token = req.headers["x-access-token"];
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
   var currentUser = jwt.decode(token, process.env.TOKEN_SECRET).id;
   var currentUserId = await User.collection.findOne({ email: currentUser });
   var currentUserId = String(currentUserId._id);
@@ -88,7 +90,8 @@ router.put("/:id/like", auth, async (req, res) => {
 
 router.put("/:id/comment", auth, async (req, res) => {
   const comment = req.body.comment;
-  var token = req.headers["x-access-token"];
+ const authHeader = req.headers["authorization"];
+ const token = authHeader && authHeader.split(" ")[1];
   var currentUser = jwt.decode(token, process.env.TOKEN_SECRET).id;
   var currentUserId = await User.collection.findOne({ email: currentUser });
   var currentUserId = String(currentUserId._id);
@@ -111,7 +114,8 @@ router.put("/:id/comment", auth, async (req, res) => {
 //get a post
 
 router.get("/:id", auth, async (req, res) => {
-  var token = req.headers["x-access-token"];
+ const authHeader = req.headers["authorization"];
+ const token = authHeader && authHeader.split(" ")[1];
   var currentUser = jwt.decode(token, process.env.TOKEN_SECRET).id;
   var currentUserId = await User.collection.findOne({ email: currentUser });
   var currentUserId = String(currentUserId._id);
