@@ -13,6 +13,7 @@ router.post("/", auth, async (req, res) => {
   var currentUserId = await User.collection.findOne({ email: currentUser });
   var currentUserId = String(currentUserId._id);
   const newPost = new Post({userId: currentUserId ,...req.body});
+  console.log(newPost);
   try {
     const savedPost = await newPost.save();
     res.status(200).json({
