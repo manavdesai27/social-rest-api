@@ -31,7 +31,8 @@ router.put("/:id", auth, async (req, res) => {
 //delete user
 router.delete("/:id", auth, async (req, res) => {
 
-  var token = req.headers["x-access-token"];
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
   var currentUser = jwt.decode(token, process.env.TOKEN_SECRET).id;
   var currentUserId = await User.collection.findOne({ email: currentUser });
   var currentUserId = String(currentUserId._id);
@@ -66,7 +67,8 @@ router.get("/:id", auth, async (req, res) => {
 //follow a user
 
 router.put("/:id/follow", auth, async (req, res) => {
-  var token = req.headers["x-access-token"];
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
   var currentUser = jwt.decode(token, process.env.TOKEN_SECRET).id;
   var currentUserId = await User.collection.findOne({ email: currentUser });
   var currentUserId = String(currentUserId._id);
@@ -94,7 +96,8 @@ router.put("/:id/follow", auth, async (req, res) => {
 
 router.put("/:id/unfollow", auth, async (req, res) => {
 
-  var token = req.headers["x-access-token"];
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
   var currentUser = jwt.decode(token, process.env.TOKEN_SECRET).id;
   var currentUserId = await User.collection.findOne({ email: currentUser });
   var currentUserId = String(currentUserId._id);
