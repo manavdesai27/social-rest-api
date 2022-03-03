@@ -5,49 +5,49 @@ const auth = require("../middleware/authMiddleware");
 const jwt = require("jsonwebtoken");
 
 //update user
-router.put("/:id", auth, async (req, res) => {
-  if (req.body.userId === req.params.id || req.body.isAdmin) {
-    if (req.body.password) {
-      try {
-        const salt = await bcrypt.genSalt(10);
-        req.body.password = await bcrypt.hash(req.body.password, salt);
-      } catch (err) {
-        return res.status(500).json(err);
-      }
-    }
-    try {
-      const user = await User.findByIdAndUpdate(req.params.id, {
-        $set: req.body,
-      });
-      res.status(200).json("Account has been updated");
-    } catch (err) {
-      return res.status(500).json(err);
-    }
-  } else {
-    return res.status(403).json("You can update only your account!");
-  }
-});
+// router.put("/:id", auth, async (req, res) => {
+//   if (req.body.userId === req.params.id || req.body.isAdmin) {
+//     if (req.body.password) {
+//       try {
+//         const salt = await bcrypt.genSalt(10);
+//         req.body.password = await bcrypt.hash(req.body.password, salt);
+//       } catch (err) {
+//         return res.status(500).json(err);
+//       }
+//     }
+//     try {
+//       const user = await User.findByIdAndUpdate(req.params.id, {
+//         $set: req.body,
+//       });
+//       res.status(200).json("Account has been updated");
+//     } catch (err) {
+//       return res.status(500).json(err);
+//     }
+//   } else {
+//     return res.status(403).json("You can update only your account!");
+//   }
+// });
 
-//delete user
-router.delete("/:id", auth, async (req, res) => {
+// //delete user
+// router.delete("/:id", auth, async (req, res) => {
 
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
-  var currentUser = jwt.decode(token, process.env.TOKEN_SECRET).id;
-  var currentUserId = await User.collection.findOne({ email: currentUser });
-  var currentUserId = String(currentUserId._id);
+//   const authHeader = req.headers["authorization"];
+//   const token = authHeader && authHeader.split(" ")[1];
+//   var currentUser = jwt.decode(token, process.env.TOKEN_SECRET).id;
+//   var currentUserId = await User.collection.findOne({ email: currentUser });
+//   var currentUserId = String(currentUserId._id);
 
-  if (currentUserId === req.params.id || req.body.isAdmin) {
-    try {
-      await User.findByIdAndDelete(req.params.id);
-      res.status(200).json("Account has been deleted");
-    } catch (err) {
-      return res.status(500).json(err);
-    }
-  } else {
-    return res.status(403).json("You can delete only your account!");
-  }
-});
+//   if (currentUserId === req.params.id || req.body.isAdmin) {
+//     try {
+//       await User.findByIdAndDelete(req.params.id);
+//       res.status(200).json("Account has been deleted");
+//     } catch (err) {
+//       return res.status(500).json(err);
+//     }
+//   } else {
+//     return res.status(403).json("You can delete only your account!");
+//   }
+// });
 
 //get a user
 router.get("/:id", auth, async (req, res) => {

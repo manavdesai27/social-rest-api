@@ -7,7 +7,12 @@ const jwt = require("jsonwebtoken");
 //create a post
 
 router.post("/", auth, async (req, res) => {
-  const newPost = new Post(req.body);
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+  var currentUser = jwt.decode(token, process.env.TOKEN_SECRET).id;
+  var currentUserId = await User.collection.findOne({ email: currentUser });
+  var currentUserId = String(currentUserId._id);
+  const newPost = new Post({userId: currentUserId ,...req.body});
   try {
     const savedPost = await newPost.save();
     res.status(200).json({
