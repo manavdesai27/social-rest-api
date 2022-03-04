@@ -34,10 +34,9 @@ router.post("/register", async (req, res) => {
 //LOGIN
 router.post("/login", async (req, res) => {
 
-  const token = generateToken(req.body.email);
-
   try {
     const user = await User.findOne({ email: req.body.email });
+    const token = generateToken(user._id);
     !user && res.status(404).json("user not found");
 
     const validPassword = await bcrypt.compare(req.body.password, user.password)
