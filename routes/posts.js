@@ -65,9 +65,6 @@ router.put("/like/:id", auth, async (req, res) => {
 
 router.put("/comment/:id", auth, async (req, res) => {
   try {
-    // const authHeader = req.headers["authorization"];
-    // const token = authHeader && authHeader.split(" ")[1];
-    // var currentUser = jwt.decode(token, process.env.TOKEN_SECRET).id;
     const comment = req.body.comment;
     const post = await Post.findById(req.params.id);
     await post.updateOne({
