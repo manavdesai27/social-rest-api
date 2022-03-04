@@ -1,15 +1,12 @@
 const router = require("express").Router();
 const Post = require("../models/Post");
-const User = require("../models/User");
 const auth = require("../middleware/authMiddleware");
-const jwt = require("jsonwebtoken");
 
 //create a post
 
 router.post("/", auth, async (req, res) => {
   const { title, desc } = req.body;
   const newPost = new Post({ userId: req.currentUser.id, title, desc });
-  console.log(newPost);
   try {
     const savedPost = await newPost.save();
     res.status(200).json({
@@ -62,6 +59,7 @@ router.put("/:id/comment", auth, async (req, res) => {
     // const authHeader = req.headers["authorization"];
     // const token = authHeader && authHeader.split(" ")[1];
     // var currentUser = jwt.decode(token, process.env.TOKEN_SECRET).id;
+    const comment = req.body.comment;
     const post = await Post.findById(req.params.id);
     await post.updateOne({
       $push: {
@@ -101,7 +99,6 @@ router.get("/timeline/all", auth, async (req, res) => {
 
     res.json(userPosts);
   } catch (err) {
-    console.log(err);
     res.status(500).json(err);
   }
 });
