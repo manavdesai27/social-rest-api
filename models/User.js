@@ -28,6 +28,16 @@ const UserSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    followersCount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    followingsCount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
     followers: {
       type: Array,
       default: [],

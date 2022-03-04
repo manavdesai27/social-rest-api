@@ -13,6 +13,7 @@ router.post("/", auth, async (req, res) => {
       Id: savedPost._id,
       Title: savedPost.title,
       Desc: savedPost.desc,
+      Created_at: savedPost.createdAt,
     });
   } catch (err) {
     res.status(500).json(err);
@@ -26,9 +27,9 @@ router.delete("/:id", auth, async (req, res) => {
     const post = await Post.findById(req.params.id);
     if (post.userId == req.currentUser.id) {
       await post.deleteOne();
-      res.status(200).json("the post has been deleted");
+      res.status(200).json("This post has been deleted");
     } else {
-      res.status(403).json("you can delete only your post");
+      res.status(403).json("You can delete only your post!");
     }
   } catch (err) {
     res.status(500).json(err);
@@ -37,14 +38,22 @@ router.delete("/:id", auth, async (req, res) => {
 
 //like / dislike a post
 
-router.put("/:id/like", auth, async (req, res) => {
+router.put("/like/:id", auth, async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
     if (!post.likes.includes(req.currentUser.id)) {
-      await post.updateOne({ $push: { likes: req.currentUser.id } });
+      await post.updateOne({
+        $push: { likes: req.currentUser.id },
+        $set: { likesCount: post.likesCount + 1 },
+      });
       res.status(200).json("The post has been liked");
     } else {
-      await post.updateOne({ $pull: { likes: req.currentUser.id } });
+      await post.updateOne({
+        $pull: {
+          likes: req.currentUser.id,
+        },
+        $set: { likesCount: post.likesCount - 1 },
+      });
       res.status(200).json("The post has been disliked");
     }
   } catch (err) {
@@ -54,7 +63,7 @@ router.put("/:id/like", auth, async (req, res) => {
 
 //Comment a post
 
-router.put("/:id/comment", auth, async (req, res) => {
+router.put("/comment/:id", auth, async (req, res) => {
   try {
     // const authHeader = req.headers["authorization"];
     // const token = authHeader && authHeader.split(" ")[1];
@@ -68,6 +77,7 @@ router.put("/:id/comment", auth, async (req, res) => {
           userId: req.currentUser.id,
         },
       },
+      $set: { commentsCount: post.commentsCount + 1 },
     });
     res.status(200).json("The post has been commented");
   } catch (err) {
@@ -80,8 +90,8 @@ router.get("/:id", auth, async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
     res.status(200).json({
-      Likes: post.likes.length,
-      Comments: post.comments.length,
+      Likes: post.likesCount,
+      Comments: post.commentsCount,
     });
   } catch (err) {
     res.status(500).json(err);
@@ -92,7 +102,6 @@ router.get("/:id", auth, async (req, res) => {
 
 router.get("/timeline/all", auth, async (req, res) => {
   try {
-    
     const userPosts = await Post.find({ userId: req.currentUser.id }).sort({
       createdAt: -1,
     });
